@@ -145,21 +145,8 @@ api.prototype.authorizeNodejs = function (options, res, done) {
     //如果是access_token过期导致
     this.getAuthorizationEndpoint(function(err, authorization_endpoint) {
         var oauth_url = authorization_endpoint + '/oauth/token?';
-
-        //var bearer = config.clientId + ':' + apiSecret;
-        //bearer = new Buffer(bearer).toString('base64'); 
         var bearer = 'czZCaGRSa3F0MzpnWDFmQmF0M2JW';
-        self.post(oauth_url, {
-            headers: {
-                'authorization': 'Basic ' + bearer,
-                'contentType': 'application/x-www-form-urlencoded'
-            },
-            data: {
-                'usename': '15824122675',
-                'password': '123456',
-                'grant_type': 'grant_type'
-            }
-        }, function(err, response){
+        self.getAccessToken({url: oauth_url, username: '15824121675', '123456'}, function(response){
             //保存用户新的 refresh_token 和 access_token
             //使用新的 access_token 重试上一次请求，成功后返回正确的结果给用户
             //如果仍然失败，返回失败错误信息给用户
@@ -171,8 +158,8 @@ api.prototype.authorizeNodejs = function (options, res, done) {
             fetch(url, fetchOptions)
                 .then((response) => response.text())
                 .then((responseText) => {
-                    if (res.status_code === 401) {
-                        done && done(new Error(makeErrorMessageFromResponse(res)), res);
+                    if (responseText.code === 401) {
+                        done && done(new Error(makeErrorMessageFromResponse(responseText)), responseText);
                     } else {
                         done && done(null, responseText);
                     }
@@ -189,10 +176,10 @@ api.prototype.authorizeNodejs = function (options, res, done) {
 
 api.prototype.processResponse = function(options, res, done) {
 
-    if (res.status_code === 401 && !options.ignore_unauthorized && typeof window !== 'undefined') {
+    if (res.code === 401 && !options.ignore_unauthorized && typeof window !== 'undefined') {
         return this.authorizeBrowser();
     }
-    if (res.status_code === 401 && !options.ignore_unauthorized && typeof window === 'undefined') {
+    if (res.code === 401 && !options.ignore_unauthorized && typeof window === 'undefined') {
         return this.authorizeNodejs(options, res, done);
     }
     return done(res);  
@@ -272,6 +259,32 @@ api.prototype.post = function(path, options, done) {
 
     this.executeRequest(path, options, done);
 };
+
+api.prototype.getInfo = function(){
+
+}
+
+/** HTTPS **/
+api.prototype.getAccessToken = function(credentials, done){
+    credentials = credentials || {};
+    //var bearer = config.clientId + ':' + apiSecret;
+    //bearer = new Buffer(bearer).toString('base64'); 
+    var bearer = 'czZCaGRSa3F0MzpnWDFmQmF0M2JW';
+
+    var fetchOptions = {
+        method:  'POST',
+        headers: {
+            'authorization': 'Basic ' + bearer,
+            'contentType': 'application/x-www-form-urlencoded'
+        },
+        body: 'username=' + credentials.username +  '&password=' + credentials.password + '&grant_type=password'
+    };
+    fetch(credentials.url, fetchOptions)
+        .then((response) => response.text())
+        .then((responseText) => {
+            done(responseText);
+        }).done();
+}
 
 module.exports = api;
 

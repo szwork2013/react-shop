@@ -33,6 +33,7 @@ var login = React.createClass({
   },
 
   componentDidMount: function() {
+
     Store.get('user').then((userdata)=>{
       this.setState({
         phone:userdata.user_name,
@@ -82,13 +83,13 @@ var login = React.createClass({
       return;
     }
 
-    fetch(API.LOGIN+"?user_name="+phone+"&code="+code+"&type=verifiycode")
+    fetch(API.LOGIN+"?username="+phone+"&password="+code+"&type=verifiycode")
       .then((response) => response.json())
       .then((responseData) => {
         if(responseData.code==0){
           this._loginSucc(responseData.data);
         }else{
-          alert("验证码错误");
+          alert("用户名或密码错误");
         }
       })
       .done();
@@ -99,6 +100,9 @@ var login = React.createClass({
   },
 
   logout:function(){
+    Store.delete('user').then((userdata)=>{
+      this.setState({logined:false});
+    });
     this.setState({logined:false});
   },
 

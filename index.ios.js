@@ -5,9 +5,12 @@
 'use strict';
 
 var React = require('react-native');
+var store = require('react-native-simple-store');
+
 var Login = require('./app/page/login');
 var Index = require('./app/page/index');
-var store = require('react-native-simple-store');
+var config = require('./app/config');
+var aes = require('./app/util/aes');
 
 var {
   AppRegistry,
@@ -20,6 +23,14 @@ var app = React.createClass({
     return{
       logined:false,
     };
+  },
+
+  componentDidMount: function() {
+    store.get('user').then((userdata)=>{
+      console.log(userdata);
+      this.setState({
+        logined:userdata.user_name,
+    })});
   },
 
   _renderLogin:function(){

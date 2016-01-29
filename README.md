@@ -2,11 +2,15 @@
 品牌旗下商户版 ios 和android 客户端app，使用react-native开发。
 
 ### 环境配置
-(1)需要一台Mac(OSX)
-(2)在Mac上安装Xcode,建议Xcode 6.3以上版本
-(3)安装node.js:https://nodejs.org/download/
-(4)建议安装watchman，终端命令：brew install watchman
-(5)安装flow：brew install flow
+- (1)需要一台Mac(OSX)
+
+- (2)在Mac上安装Xcode,建议Xcode 6.3以上版本
+
+- (3)安装node.js:https://nodejs.org/download/
+
+- (4)建议安装watchman，终端命令：brew install watchman
+
+- (5)安装flow：brew install flow
 
 ### 启动
 

@@ -11,6 +11,15 @@ var Login = require('./app/page/login');
 var Index = require('./app/page/index');
 var config = require('./app/config');
 var aes = require('./app/util/aes');
+var API = require('./app/api/index');
+var config = require('./app/config')
+
+var api = new API({
+  api_endpoint: config.api,
+  authorization_endpoint: config.oauth2,
+  use_authorization_header: true,
+  client_id: config.clientId
+})
 
 var {
   AppRegistry,

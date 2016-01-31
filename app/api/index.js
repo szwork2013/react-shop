@@ -283,9 +283,7 @@ api.prototype.getAccessToken = function(credentials, done){
         .then((responseText) => {
             console.log(responseText)
             done(responseText);
-        }).done();
-
-    
+        }).done();    
 }
 
 module.exports = api;

@@ -77,6 +77,12 @@ var Me = React.createClass({
     LinkingIOS.openURL('tel://4007008780');
   },
 
+  _logout: function(){
+    store.delete('user').then((userdata)=>{
+      alert('成功退出')
+    });
+  },
+
   render: function() {
     var thiz = this;
     var name="";
@@ -120,9 +126,15 @@ var Me = React.createClass({
 
         <TouchableHighlight 
           style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#ffffff',height:45,marginTop:30}} 
+          underlayColor="#dad9d7" onPress={()=>this._logout()}>
+         <Text >退出登录</Text>
+        </TouchableHighlight>
+
+        <TouchableHighlight 
+          style={{flex:1,justifyContent:'center',alignItems:'center',backgroundColor:'#ffffff',height:45,marginTop:30}} 
           underlayColor="#dad9d7" onPress={()=>this._call()}>
          <Text >拨打客服400-700-8780</Text>
-        </TouchableHighlight>
+        </TouchableHighlight>  
 
       </ScrollView>
     );

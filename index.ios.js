@@ -23,7 +23,7 @@ var {
 var app = React.createClass({
   getInitialState: function() {
     return{
-      logined:true,
+      logined:false,
     };
   },
 
@@ -32,7 +32,8 @@ var app = React.createClass({
       console.log(userdata);
       this.setState({
         logined:userdata.username,
-    })});
+      })
+    });
   },
 
   _renderLogin:function(){

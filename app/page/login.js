@@ -10,6 +10,9 @@ var Util = require('../util/util');
 var TimerMixin = require('react-timer-mixin');
 var Store = require('react-native-simple-store');
 
+var api = require('../api');
+//console.log(api.getAccessToken)
+
 var {
   AppRegistry,
   StyleSheet,
@@ -79,20 +82,20 @@ var login = React.createClass({
       return;
     }
      if(!this.checkCode(code)){
-      alert("验证码为4位数字");
+      alert("密码格式不正确");
       return;
     }
 
-    fetch(API.LOGIN+"?username="+phone+"&password="+code+"&type=verifiycode")
-      .then((response) => response.json())
-      .then((responseData) => {
-        if(responseData.code==0){
-          this._loginSucc(responseData.data);
-        }else{
-          alert("用户名或密码错误");
-        }
-      })
-      .done();
+    api.getAccessToken({username: phone, password: code}, (responseData) => {
+      if (responseData && responseData.access_token){
+        responseData.username = phone;
+        responseData.password = code;
+        this._loginSucc(responseData);
+      } else {
+        alert("用户名或密码错误");
+      }
+    })
+
   },
 
   _loginSucc:function(userData){
@@ -111,7 +114,8 @@ var login = React.createClass({
   },
 
   checkCode:function(code){
-    return code&&code.length===4;
+    var passwordRe = /[a-zA-Z0-9]{6,18}/
+    return code && passwordRe.test(code)
   },
 
   renderLogined:function(){
@@ -144,16 +148,13 @@ var login = React.createClass({
           </View>
           <View style={[styles.line]} />
           <View style={[styles.inputRow,{marginTop:10}]}>
-            <Text style={styles.label}>验证码</Text>
+            <Text style={styles.label}>密码</Text>
             <TextInput
               keyboardType ='numeric'
               clearButtonMode='while-editing'
               style={styles.input}
-              placeholder="4位数字"
+              placeholder="请输入密码"
               onChangeText={(text) => this.setState({code: text})}/>
-            <TouchableHighlight style={[styles.btn,{width:80,height:30}]} underlayColor='#0057a84a' onPress={this.getCode}>
-              <Text style={{color:'#fff',fontSize:12}}>{getCode_text}</Text>
-            </TouchableHighlight>
           </View>
           <View style={[styles.line,{marginTop:2}]} />
           <TouchableHighlight style={[styles.btn,styles.marginTop30]} underlayColor='#0057a84a' onPress={this.login}>
@@ -170,6 +171,10 @@ var login = React.createClass({
       return this.renderLogin();
     },
   });
+
+// <TouchableHighlight style={[styles.btn,{width:80,height:30}]} underlayColor='#0057a84a' onPress={this.getCode}>
+//   <Text style={{color:'#fff',fontSize:12}}>{getCode_text}</Text>
+// </TouchableHighlight>
 
 var styles = StyleSheet.create({
   container: {

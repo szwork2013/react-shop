@@ -31,8 +31,9 @@ var Util = {
     fetch(url, fetchOptions)
     .then((response) => response.text())
     .then((responseText) => {
-      console.debug('POST: ' + url, data);
-      console.debug('RESPONSE: ', JSON.parse(responseText))
+
+      console.log('POST: ' + url, data);
+      console.log('RESPONSE: ', JSON.parse(responseText))
       callback(JSON.parse(responseText));
       // callback(responseText);
     }).done();

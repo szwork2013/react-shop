@@ -86,9 +86,9 @@ api.prototype.normalizeOptions = function(options) {
 api.prototype.getAuthorizationEndpoint = function(done) {
     var self = this;
     if (this.authorization_endpoint) {
-        setTimeout(function() {
-            done(null, self.authorization_endpoint)
-        }, 1);
+        //setTimeout(function() {
+        done(null, self.authorization_endpoint)
+        //}, 1);
     } else {
         this.get('/info', {
             status_code: 200
@@ -146,7 +146,7 @@ api.prototype.authorizeNodejs = function (options, res, done) {
     this.getAuthorizationEndpoint(function(err, authorization_endpoint) {
         var oauth_url = authorization_endpoint + '/oauth/token?';
         var bearer = 'czZCaGRSa3F0MzpnWDFmQmF0M2JW';
-        self.getAccessToken({url: oauth_url, username: '15824121675', '123456'}, function(response){
+        self.getAccessToken({url: oauth_url, username: '15824121675', password:'123456'}, function(response){
             //保存用户新的 refresh_token 和 access_token
             //使用新的 access_token 重试上一次请求，成功后返回正确的结果给用户
             //如果仍然失败，返回失败错误信息给用户
@@ -165,12 +165,7 @@ api.prototype.authorizeNodejs = function (options, res, done) {
                     }
                 }).done();
         })
-    }
-   
-
-   if (done) {
-       
-   }
+    })
 };
 
 
@@ -188,9 +183,9 @@ api.prototype.processResponse = function(options, res, done) {
 api.prototype.marshalRequest = function(url, options, done) {
     /* this is effectively a no-op implementation. derived clients can use it to modify the request. */
     var self = this;
-    setTimeout(function() {
-        done.call(self, null, url, options);
-    }, 1);
+    //setTimeout(function() {
+    done.call(self, null, url, options);
+    //}, 1);
 };
 api.prototype.executeRequest = function(path, options, done) {
     // Allow the special case where api components may need to talk to the UAA with it's own host.
@@ -275,15 +270,22 @@ api.prototype.getAccessToken = function(credentials, done){
         method:  'POST',
         headers: {
             'authorization': 'Basic ' + bearer,
+            'Accept': 'application/json',
             'contentType': 'application/x-www-form-urlencoded'
         },
         body: 'username=' + credentials.username +  '&password=' + credentials.password + '&grant_type=password'
     };
-    fetch(credentials.url, fetchOptions)
-        .then((response) => response.text())
+    
+    var oauth_url = 'http://oauth2.ttjinhuo.com' + '/oauth/token?';
+    console.log(oauth_url)
+    fetch(oauth_url, fetchOptions)
+        .then((response) => response.json())
         .then((responseText) => {
+            console.log(responseText)
             done(responseText);
         }).done();
+
+    
 }
 
 module.exports = api;

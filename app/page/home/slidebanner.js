@@ -30,8 +30,8 @@ var Slider = React.createClass({
             <Swiper style={Styles.wrapper} showsButtons={false} autoplay={true} height={125} showsPagination={false}>
                 {this.props.banners.map(function(banner){
                     return (
-                        <TouchableHighlight onPress={()=>thiz._loadWeb(banner.title,banner.url)}>
-                            <Image style={[Styles.slide,]} source={{uri: banner.image_path}}></Image>
+                        <TouchableHighlight onPress={()=>thiz._loadWeb(banner.title, banner.subtitle)}>
+                            <Image style={[Styles.slide,]} source={{uri: banner.ext1}}></Image>
                         </TouchableHighlight>
                     );
                 })}

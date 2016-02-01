@@ -29,10 +29,10 @@ var ADViews = React.createClass({
         for(var i = 0; i < advs.length; i++){
             var ad = advs[i];
             advViews.push(
-                <TouchableHighlight onPress={()=>this._loadWeb(ad.title,ad.url)}>
+                <TouchableHighlight onPress={()=>this._loadWeb(ad.title, ad.ext1)}>
                     <View>
                         <View style={{height:10,backgroundColor:'#eef0f3'}} />
-                        <Image style={[Styles.adv]} source={{uri:advs[i].image_path}} />
+                        <Image style={[Styles.adv]} source={{uri:ad.subtitle}} />
                     </View>
                 </TouchableHighlight>
             );

@@ -16,7 +16,7 @@ var ItemBlock = React.createClass({
         var item = this.props.service;
         return (
             <View style={[styles.itemBlock]}>
-                <Image style={[styles.image]} source={{uri: item.icon}}></Image>
+                <Image style={[styles.image]} source={{uri: item.ext1}}></Image>
                 <Text style={[styles.font18]}>{item.title}</Text>
             </View>
         );

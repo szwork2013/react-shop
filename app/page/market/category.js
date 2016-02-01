@@ -56,8 +56,8 @@ var Category = React.createClass({
       <TouchableHighlight
         underlayColor ='#eef0f3'
         style = {[Styles.category,styles_bg]}
-        onPress = {() => this._rowPressed(rowID,cate.cate_id)}>
-        <Text> {cate.cate_name} </Text>
+        onPress = {() => this._rowPressed(rowID,cate.id)}>
+        <Text> {cate.cat_name} </Text>
       </TouchableHighlight>
       );
   },

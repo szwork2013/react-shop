@@ -11,9 +11,9 @@ var Collection = require('./collection'),
     Cats = require('./cat'), 
     Specs = require('./spec');
 
-var api = function(api_endpoint, options) {
+var api = function(options) {
     options = options || {};
-    this.api_endpoint = api_endpoint || options.api_endpoint;
+    this.api_endpoint = options.api_endpoint;
     this.authorization_endpoint = options.authorization_endpoint || null;
     this.use_authorization_header = options.use_authorization_header || true;
 
@@ -206,9 +206,11 @@ api.prototype.executeRequest = function(path, options, done) {
               headers: options.headers,
               body: JSON.stringify(options.data)
             };
+            console.log('['+options.verb+ '] ' + url)
             fetch(url, fetchOptions)
-                .then((response) => response.text())
+                .then((response) => response.json())
                 .then((responseText) => {
+                    console.log(responseText)
                     self.processResponse(options, responseText, done);
                 }).done();
         } else if ( window && typeof window === 'object' ) {

@@ -12,6 +12,7 @@ var API = require('../../network/api');
 var Util = require('../../util/util');
 var Loading = require('../loading');
 var Category = require('./category');
+var api = require('../../api');
 
 var {
   	View,
@@ -51,14 +52,13 @@ var Market = React.createClass({
   _fetchData: function() {
     var thiz = this;
     var thizDataSource = thiz.state.dataSource;
-    Util.post(API.CATEGORYLIST,{'store_id':'8805'},
-      function (ret){
-        if(ret.code==0&&ret.data.assortment.length>0){
-          resultsCache.dataForCategory= ret.data.assortment;
+    api.cats.list( function (ret){
+        if (ret.code== '200' && ret.data.length>0){
+          resultsCache.dataForCategory= ret.data;
           thiz.setState({
               loaded:true,
           });
-          thiz._fetchGoodsByCategory(ret.data.assortment[0].cate_id);
+          thiz._fetchGoodsByCategory(ret.data[0].id);
         }
       });
   },
@@ -67,16 +67,19 @@ var Market = React.createClass({
     var thiz = this;
     var thizDataSource = thiz.state.goodsList.dataSource;
 
-    var params={
-        'store_id':8805,
-        'page':1,
-        'limit':30,
-        'cate_id':category_id
+    var options = {
+        queries: {
+          
+        },
+        filters: {
+          //'cat_id': category_id,
+          'page':1,
+          'page_size': '30'
+        }
     };
-    Util.post(API.GOODSLIST,params,
-      function (ret){
-        thiz._setGoodsList(ret.data);
-      });
+    api.goods.list( options, function (ret){
+        thiz._setGoodsList(ret.data.data);
+    });
   },
 
   _setGoodsList: function (goodsList:Array){
@@ -124,10 +127,10 @@ var Market = React.createClass({
         <View style={styles.rowContainer}>
           <Image style={styles.thumb} source={{ uri: rowData.default_image }} />
           <View style={{flex:1}}>
-            <Text style={{flex:1}}>{rowData.goods_name}</Text>
-            <View style={{flexDirection:'row',alignItems:'flex-end',}}>
-              <Text style={{color:'#626770'}}>倍全价:</Text>
-              <Text style={{color:'#f28006',flex:1}}>{rowData.shichang}</Text>
+            <Text style={{flex:1}}>{rowData.name}</Text>
+            <View style={{flexDirection:'row',alignItems:'flex-end'}}>
+              <Text style={{color:'#626770'}}>天天价:</Text>
+              <Text style={{color:'#f28006',flex:1}}>{rowData.market_price}</Text>
               <Image style={{height:25,width:25,marginRight:10}} source={require("image!ic_goods_add")}/>
             </View>
           </View>

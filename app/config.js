@@ -1,6 +1,6 @@
 module.exports = {
     version: '0.0.1',
-    api: 'http://api.ttjinhuo.com/v1',
+    api: 'http://api.ttjinhuo.com/api',
     oauth2: 'http://oauth2.ttjinhuo.com',
     clientId: 'reactnativeapp',
     secret: 'aWxvdmV5dXl1MTk4ODk',

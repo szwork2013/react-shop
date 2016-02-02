@@ -74,6 +74,10 @@ var GoodsDetail = React.createClass({
         });
     },
 
+    addToCart: function(){
+        console.log('add to cart')
+    },
+
     renderTabContent: function(){
         //console.log(this.state.page)
         var good = this.state.good;
@@ -103,7 +107,8 @@ var GoodsDetail = React.createClass({
         var htmlContent = good.description || "";
         var TabView = thiz.renderTabContent();
         return (
-            <ScrollView>
+            <View style={{flex: 1}}>
+              <ScrollView style={{flex: .75, marginBottom:0}}>
                 <View style={styles.container}>
                     <Image 
                         style={{width:Util.size.width,height:450}}
@@ -130,7 +135,16 @@ var GoodsDetail = React.createClass({
                         {TabView}
                     </View>
                 </View>
-            </ScrollView>
+              </ScrollView>
+              <View style={{flex: .25, borderTopWidth: 1, borderTopColor: '#dadce2', marginTop: 0}}>
+                <TouchableHighlight
+                  underlayColor='#ee7700'
+                  style={{ justifyContent: 'center',alignItems: 'center',height: 50, backgroundColor:'#ee7700'}}
+                  onPress={() => thiz.addToCart()}>
+                  <Text style={{fontSize:18,color:'white'}}>添加到购物车</Text>
+                </TouchableHighlight>
+              </View>
+            </View>
         );
     },
 });
@@ -168,7 +182,6 @@ var styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor:'#f9f9f9',
-        marginBottom:100,
     },
     thumb: {
         width: 60,

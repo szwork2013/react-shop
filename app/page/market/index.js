@@ -13,6 +13,7 @@ var Util = require('../../util/util');
 var Loading = require('../loading');
 var Category = require('./category');
 var api = require('../../api');
+var GoodDetail = require('./goodDetail');
 
 var {
   	View,
@@ -72,7 +73,7 @@ var Market = React.createClass({
           
         },
         filters: {
-          //'cat_id': category_id,
+          'cat_id': category_id,
           'page':1,
           'page_size': '30'
         }
@@ -94,6 +95,23 @@ var Market = React.createClass({
 
   _selectCategory:function (rowID: number, cate_id: number){
     this._fetchGoodsByCategory(cate_id);
+  },
+
+  _addNavigator: function(component, data){
+    data = data || {};
+    data.title = '商品详情'
+    this.props.navigator.push({
+        title: data.title,
+        component: component,
+        passProps:{
+          data: data
+        }
+      });
+  },
+
+  _rowPressed:function(rowID: number, goodId: number){
+    //console.log(rowID, goodId);
+    this._addNavigator(GoodDetail, {goodId: goodId});
   },
 
   renderSeparator: function(sectionID: number,rowID: number,adjacentRowHighlighted: boolean) {
@@ -124,17 +142,21 @@ var Market = React.createClass({
   _renderGoodsList:function(rowData: Object, sectionID: number | string, rowID: number | string){
     return (
       <View>
-        <View style={styles.rowContainer}>
-          <Image style={styles.thumb} source={{ uri: rowData.default_image }} />
-          <View style={{flex:1}}>
-            <Text style={{flex:1}}>{rowData.name}</Text>
-            <View style={{flexDirection:'row',alignItems:'flex-end'}}>
-              <Text style={{color:'#626770'}}>天天价:</Text>
-              <Text style={{color:'#f28006',flex:1}}>{rowData.market_price}</Text>
-              <Image style={{height:25,width:25,marginRight:10}} source={require("image!ic_goods_add")}/>
+        <TouchableHighlight 
+          underlayColor ='#eef0f3'
+          onPress = {() => this._rowPressed(rowID, rowData.id)}>
+          <View style={styles.rowContainer}>
+            <Image style={styles.thumb} source={{ uri: rowData.default_image }} />
+            <View style={{flex:1}}>
+              <Text style={{flex:1}}>{rowData.name}</Text>
+              <View style={{flexDirection:'row',alignItems:'flex-end'}}>
+                <Text style={{color:'#626770'}}>天天价:</Text>
+                <Text style={{color:'#f28006',flex:1}}>{rowData.market_price}</Text>
+                <Image style={{height:25,width:25,marginRight:10}} source={require("image!ic_goods_add")}/>
+              </View>
             </View>
           </View>
-        </View>
+        </TouchableHighlight>
         <View style={styles.line}/>
       </View>
       );

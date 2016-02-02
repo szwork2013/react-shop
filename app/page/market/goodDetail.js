@@ -12,6 +12,8 @@ var api = require('../../api');
 var Util = require('../../util/util');
 var Loading = require('../loading');
 var HTMLView = require('react-native-htmlview');
+var Tabs = require('../../comps/tab');
+var ScrollableTabView = require('react-native-scrollable-tab-view');
 
 var {
     StyleSheet,
@@ -32,7 +34,8 @@ var resultsCache = {
 var GoodsDetail = React.createClass({
     getInitialState: function() {
         return {
-            good:null,
+            good: null,
+            page: 'detail'
         };
     },
 
@@ -40,6 +43,7 @@ var GoodsDetail = React.createClass({
         var data = this.props.data;
         this.setState({
           good: data,
+          page: 'detail'
         });
         this._fetchGoods(data.goodId);
     },
@@ -69,12 +73,35 @@ var GoodsDetail = React.createClass({
             }
         });
     },
+
+    renderTabContent: function(){
+        //console.log(this.state.page)
+        var good = this.state.good;
+        var htmlContent = good.description || "";
+        switch(this.state.page){
+            case 'detail': 
+                return  <View style={styles.contentView}>
+                            <HTMLView value={htmlContent} style={styles.container}/>
+                        </View>
+            case 'comment': 
+                return  <View style={styles.contentView}>
+                            <Text>这里是评论内容</Text>
+                        </View>
+            case 'service': 
+                return  <View style={styles.contentView}>
+                            <Text>这里是服务内容</Text>
+                        </View>
+        }
+    },
+
     render: function() {
         var good = this.state.good;
+        var thiz = this;
         if(!good){
             return <Loading loadingtext='正在加载商品...'/>
         }
         var htmlContent = good.description || "";
+        var TabView = thiz.renderTabContent();
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -87,17 +114,54 @@ var GoodsDetail = React.createClass({
                     <View style={[styles.line1,styles.marginTop10]}/>
                     <Text style={[styles.textsecond,styles.paddingLeftRight,styles.marginTop10]}>品牌：{good.brand_name}</Text>
                     <View style={[styles.line10,styles.marginTop10]}/>
-                    <Text style={[styles.textprimary,styles.paddingLeftRight,styles.marginTop10]}>商品图文详情</Text>
-                    <Text style={[styles.textprimary,styles.paddingLeftRight,styles.marginTop10]}>{htmlContent}</Text>
-                    <HTMLView
-                        value={htmlContent}
-                        style={styles.container}
-                      />
+                    <Tabs selected="detail" style={{backgroundColor:'white'}}
+                          onSelect={function(el){thiz.setState({page: el.props.name});return {style:{color:'red'}}}}>
+                        <View name="detail" style={thiz.state.page == 'detail' && styles.selected}>
+                            <Text>     商品详情     </Text>
+                        </View>
+                        <View name="comment" style={thiz.state.page == 'comment' && styles.selected}>
+                            <Text>     商品评论     </Text>
+                        </View>
+                        <View name="service" style={thiz.state.page == 'service' && styles.selected}>
+                            <Text>     专享服务     </Text>
+                        </View>
+                    </Tabs>
+                    <View>
+                        {TabView}
+                    </View>
                 </View>
             </ScrollView>
         );
     },
 });
+/**
+<ScrollableTabView>
+    <View tabLabel="React">
+        <Text>React</Text>
+    </View>
+    <View tabLabel="Flow">
+        <Text>React2</Text>
+    </View>
+    <View tabLabel="Jest">
+        <Text>React3</Text>
+    </View>
+</ScrollableTabView>
+**/
+
+/**
+<Tabs selected="detail" style={{backgroundColor:'white'}}
+      onSelect={function(el){thiz.setState({page: el.props.name});return {style:{color:'red'}}}}>
+    <View name="detail" style={thiz.state.page == 'detail' && styles.selected}>
+        <Text>商品详情</Text>
+    </View>
+    <View name="comment" style={thiz.state.page == 'comment' && styles.selected}>
+        <Text>商品评论</Text>
+    </View>
+    <View name="service" style={thiz.state.page == 'service' && styles.selected}>
+        <Text>专享服务</Text>
+    </View>
+</Tabs>
+**/
 
 
 var styles = StyleSheet.create({
@@ -155,6 +219,20 @@ var styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
     },
+    selected: {
+        paddingBottom:10,
+        paddingTop:10,
+        borderBottomWidth: 2,
+        borderBottomColor: '#D24161'
+    },
+    contentView: {
+        flex: 1,
+        backgroundColor: '#fff',
+        paddingLeft:20,
+        paddingRight:20,
+        paddingBottom:20,
+        paddingTop:20,
+    }
 });
 
 module.exports = GoodsDetail;

@@ -60,7 +60,7 @@ var index = React.createClass({
     if(this.state.selectedTab ==='home'||this.state.selectedTab==='market'){
       return <NavigatorIOS
           style={{flex:1}}
-          barTintColor='#6bb967'
+          barTintColor='#f77b6f'
           titleTextColor="#fff"
           tintColor="#fff"
           translucent={false}
@@ -80,7 +80,7 @@ var index = React.createClass({
 
     return <NavigatorIOS
       style={{flex:1}}
-      barTintColor='#6bb967'
+      barTintColor='#f77b6f'
       titleTextColor="#fff"
       tintColor="#fff"
       translucent={false}
@@ -106,7 +106,7 @@ var index = React.createClass({
 
     return <NavigatorIOS
         style={{flex:1}}
-        barTintColor='#6bb967'
+        barTintColor='#f77b6f'
         titleTextColor="#fff"
         tintColor="#fff"
         translucent={false}

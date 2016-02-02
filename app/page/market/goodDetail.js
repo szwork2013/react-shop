@@ -138,8 +138,8 @@ var GoodsDetail = React.createClass({
               </ScrollView>
               <View style={{flex: .25, borderTopWidth: 1, borderTopColor: '#dadce2', marginTop: 0}}>
                 <TouchableHighlight
-                  underlayColor='#ee7700'
-                  style={{ justifyContent: 'center',alignItems: 'center',height: 50, backgroundColor:'#ee7700'}}
+                  underlayColor='#ff3636'
+                  style={{ justifyContent: 'center',alignItems: 'center',height: 50, backgroundColor:'#ff3636'}}
                   onPress={() => thiz.addToCart()}>
                   <Text style={{fontSize:18,color:'white'}}>添加到购物车</Text>
                 </TouchableHighlight>

@@ -26,7 +26,7 @@ var styles = StyleSheet.create({
     height:50,
   },
   category_bg_select:{
-    backgroundColor:'#d7ead6',
+    backgroundColor:'#f77b6f',
   },
   category_bg_normal:{
     backgroundColor:'#ffffff',

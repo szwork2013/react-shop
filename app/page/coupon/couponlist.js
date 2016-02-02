@@ -33,18 +33,24 @@ var Market = React.createClass({
   _getCouponList:function(){
     var thiz = this;
     var thizDataSource = thiz.state.dataSource;
-    Util.post(API.COUPONLIST,Global.user,
-      function (ret){
-        if(ret.code==0&&ret.data.length>0){
-          thiz.setState({
-              dataSource: thizDataSource.cloneWithRows(ret.data),
-              loaded:true,
-          });
-        }else{
-          alert("暂无红包");
-          thiz.setState({loaded:true,});
-        }
-      });
+    var mocData = [{}, {}]
+    thiz.setState({
+        dataSource: thizDataSource.cloneWithRows(mocData),
+        loaded:true,
+    });
+
+    // Util.post(API.COUPONLIST,Global.user,
+    //   function (ret){
+    //     if(ret.code==0&&ret.data.length>0){
+    //       thiz.setState({
+    //           dataSource: thizDataSource.cloneWithRows(ret.data),
+    //           loaded:true,
+    //       });
+    //     }else{
+    //       alert("暂无红包");
+    //       thiz.setState({loaded:true,});
+    //     }
+    //   });
   },
 
   _renderListItem:function(rowData){

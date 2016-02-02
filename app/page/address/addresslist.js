@@ -35,15 +35,23 @@ var Market = React.createClass({
   _getAddressList:function(){
     var thiz = this;
     var thizDataSource = thiz.state.dataSource;
-    Util.post(API.ADDRESSLIST,Global.user,
-      function (ret){
-        if(ret.code==0&&ret.data.length>0){
-          thiz.setState({
-              dataSource: thizDataSource.cloneWithRows(ret.data),
-              loaded:true,
-          });
-        }
-      });
+
+    var mocData = [{consignee: '哆啦A梦', address: ' 北京市海淀区苏州街银丰大厦2号楼1303', contact: '400-004-3581'}, 
+                  {consignee: '哆啦A梦', address: ' 北京市海淀区苏州街银丰大厦2号楼1303', contact: '400-004-3581'}]
+    thiz.setState({
+        dataSource: thizDataSource.cloneWithRows(mocData),
+        loaded:true,
+    });
+
+    // Util.post(API.ADDRESSLIST, Global.user,
+    //   function (ret){
+    //     if(ret.code==0&&ret.data.length>0){
+    //       thiz.setState({
+    //           dataSource: thizDataSource.cloneWithRows(ret.data),
+    //           loaded:true,
+    //       });
+    //     }
+    //   });
   },
 
   _renderListItem:function(rowData){
@@ -51,7 +59,7 @@ var Market = React.createClass({
       <View style={{padding:15,backgroundColor:'white',marginBottom:10}}>
         <View style={{flexDirection:'row'}}>
           <Text style={{color:'#424242'}}>{rowData.consignee}</Text>
-          <Text style={{color:'#424242',marginLeft:20,}}>{rowData.phone_mob}</Text>
+          <Text style={{color:'#424242',marginLeft:20,}}>{rowData.contact}</Text>
         </View>
         <Text>{rowData.address}</Text>
       </View>

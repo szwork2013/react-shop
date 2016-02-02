@@ -54,20 +54,43 @@ var OrderList = React.createClass({
     params.page=pageIndex;
     params.limit=PAGESIZE;
     var thiz = this;
-    Util.post(API.ORDERLIST,Global.user,
-      function (ret){
-        if(ret.code==0&&ret.data.length>0){
-          for(var ii=0 ; ii< ret.data.length ; ii++){
-            resultsCache.dataForOrder.push(ret.data[ii]);
-          }
-          alert(resultsCache.dataForOrder.length+","+resultsCache.pageIndex);
-          thiz.setState({
-              dataSource: thiz.state.dataSource.cloneWithRows(resultsCache.dataForOrder),
-              loaded:true,
-              loadingMore:false,
-          });
-        }
-      });
+
+    var mocData = [{
+      title: 'duolaameng',
+      sn: '4234312312321312544',
+      amount: '1099',
+      orders_goods: [{
+        name: '欧莱雅男士火山岩控油清豆洁面膏100ml',
+        default_image: 'http://img.bqmart.cn/data/files/store/d77f9a67777325d5b64c004d4411b3ea.jpg',
+      },{
+        name: '舒肤佳芦荟呵护型香皂115g',
+        default_image: 'http://img.bqmart.cn/data/files/store_8805/goods_45/small_201502121140453218.jpg',
+      }]
+    }];
+    for(var ii=0 ; ii< mocData.length ; ii++){
+      resultsCache.dataForOrder.push(mocData[ii]);
+    }
+    //alert(resultsCache.dataForOrder.length+","+resultsCache.pageIndex);
+    thiz.setState({
+        dataSource: thiz.state.dataSource.cloneWithRows(resultsCache.dataForOrder),
+        loaded:true,
+        loadingMore:false,
+    });
+
+    // Util.post(API.ORDERLIST,Global.user,
+    //   function (ret){
+    //     if(ret.code==0&&ret.data.length>0){
+    //       for(var ii=0 ; ii< ret.data.length ; ii++){
+    //         resultsCache.dataForOrder.push(ret.data[ii]);
+    //       }
+    //       alert(resultsCache.dataForOrder.length+","+resultsCache.pageIndex);
+    //       thiz.setState({
+    //           dataSource: thiz.state.dataSource.cloneWithRows(resultsCache.dataForOrder),
+    //           loaded:true,
+    //           loadingMore:false,
+    //       });
+    //     }
+    //   });
   },
 
   onEndReached: function() {
@@ -121,7 +144,7 @@ var OrderList = React.createClass({
     var goods = rowData.orders_goods;
     if(goods){
       for (var i = 0; i < goods.length&&i<3; i++) {
-        imageViews.push(<Image style={[styles.thumb]} source={{uri:goods[i].goods_image}} />);
+        imageViews.push(<Image style={[styles.thumb]} source={{uri:goods[i].default_image}} />);
       };
     }
     return (
@@ -131,7 +154,7 @@ var OrderList = React.createClass({
             <Text style={{color:'#585c64'}}>{rowData.title}</Text>
             <View style={[styles.row]}>
               <Text style={{fontSize:12,color:'#929aa2'}}>订单号:</Text>
-              <Text style={{fontSize:12,color:'#929aa2',marginLeft:5}}>{rowData.order_sn}</Text>
+              <Text style={{fontSize:12,color:'#929aa2',marginLeft:5}}>{rowData.sn}</Text>
             </View>
           </View>
           <Text>查看订单</Text>
@@ -143,7 +166,7 @@ var OrderList = React.createClass({
         <View style={styles.line}/>
         <View style={[styles.row,{height:40,alignItems:'center',paddingLeft:10}]}>
           <Text style={{fontSize:14,color:'#929aa2'}}>实付款:</Text>
-          <Text style={{fontSize:14,color:'#ee7700',marginLeft:5}}>{rowData.order_amount}</Text>
+          <Text style={{fontSize:14,color:'#ee7700',marginLeft:5}}>{rowData.amount}</Text>
         </View>
       </View>
       );

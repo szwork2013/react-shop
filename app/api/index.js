@@ -11,12 +11,13 @@ var Collection = require('./collection'),
     Cats = require('./cat'), 
     Specs = require('./spec');
 
+var store = require('react-native-simple-store');
+
 var api = function(options) {
     options = options || {};
     this.api_endpoint = options.api_endpoint;
     this.authorization_endpoint = options.authorization_endpoint || null;
     this.use_authorization_header = options.use_authorization_header || true;
-
     this.token = options.token || null;
     this.scopes = options.scopes || null;
     this.redirect_uri = options.redirect_uri || null;
@@ -57,8 +58,15 @@ var makeResponseError = function(err, res) {
     return err;
 };
 api.prototype.initialize = function() {
-    /* faux-constructor to use as an extension point for derived clients */
+    store.get('user').then((userdata)=>{
+      this.token = userdata && userdata.access_token;
+    });
 };
+
+api.prototype.setAccessToken = function(token){
+    this.token = token;
+};
+
 api.prototype.initializeGenericCollections = function() {
     var self = this;
     generic_collections.forEach(function(collection_name) {
@@ -69,7 +77,7 @@ api.prototype.initializeGenericCollections = function() {
     });
 };
 api.prototype.makeAuthorizationHeader = function() {
-    return 'bearer ' + this.token;
+    return 'Bearer ' + this.token;
 };
 api.prototype.addAuthorizationHeaderToOptions = function(options) {
     options.headers['Authorization'] = this.makeAuthorizationHeader();
@@ -78,7 +86,7 @@ api.prototype.normalizeOptions = function(options) {
     options = options || {};
     options.headers = options.headers || {};
     options.global = typeof options.global === 'undefined' ? true : options.global;
-    if (this.token && options.use_authorization_header) {
+    if (this.token && this.use_authorization_header) {
         this.addAuthorizationHeaderToOptions(options);
     }
     return options;
@@ -146,22 +154,29 @@ api.prototype.authorizeNodejs = function (options, res, done) {
     this.getAuthorizationEndpoint(function(err, authorization_endpoint) {
         var oauth_url = authorization_endpoint + '/oauth/token?';
         var bearer = 'czZCaGRSa3F0MzpnWDFmQmF0M2JW';
-        self.getAccessToken({url: oauth_url, username: '15824121675', password:'123456'}, function(response){
+        self.getAccessToken({url: oauth_url, username: '18073181682', password:'123456'}, function(userData){
             //保存用户新的 refresh_token 和 access_token
+            userData.username = '18073181682';
+            store.save('user', userData);
+            self.token = userData.access_token;
             //使用新的 access_token 重试上一次请求，成功后返回正确的结果给用户
             //如果仍然失败，返回失败错误信息给用户
+            options.headers['Authorization'] = 'Bearer ' + userData.access_token;
+
             var fetchOptions = {
               method:  options.verb,
               headers: options.headers,
               body: JSON.stringify(options.data)
             };
-            fetch(url, fetchOptions)
-                .then((response) => response.text())
+            //console.log(options.url)
+            fetch(options.url, fetchOptions)
+                .then((response) => response.json())
                 .then((responseText) => {
+                    //console.log(responseText)
                     if (responseText.code === 401) {
                         done && done(new Error(makeErrorMessageFromResponse(responseText)), responseText);
                     } else {
-                        done && done(null, responseText);
+                        done && done(responseText);
                     }
                 }).done();
         })
@@ -169,14 +184,11 @@ api.prototype.authorizeNodejs = function (options, res, done) {
 };
 
 
-api.prototype.processResponse = function(options, res, done) {
-
-    if (res.code === 401 && !options.ignore_unauthorized && typeof window !== 'undefined') {
-        return this.authorizeBrowser();
-    }
-    if (res.code === 401 && !options.ignore_unauthorized && typeof window === 'undefined') {
+api.prototype.processResponse = function(options, res, done, url) {
+    if (res.code === 401 && !options.ignore_unauthorized) {
+        options.url = url;
         return this.authorizeNodejs(options, res, done);
-    }
+    } 
     return done(res);  
 };
 
@@ -211,7 +223,7 @@ api.prototype.executeRequest = function(path, options, done) {
                 .then((response) => response.json())
                 .then((responseText) => {
                     console.log(responseText)
-                    self.processResponse(options, responseText, done);
+                    self.processResponse(options, responseText, done, url);
                 }).done();
         } else if ( window && typeof window === 'object' ) {
             $.ajax({
@@ -263,6 +275,7 @@ api.prototype.getInfo = function(){
 
 /** HTTPS **/
 api.prototype.getAccessToken = function(credentials, done){
+    var self = this;
     credentials = credentials || {};
     //var bearer = config.clientId + ':' + apiSecret;
     //bearer = new Buffer(bearer).toString('base64'); 
@@ -279,13 +292,16 @@ api.prototype.getAccessToken = function(credentials, done){
     };
     
     var oauth_url = 'http://oauth2.ttjinhuo.com' + '/oauth/token?';
-    console.log(oauth_url)
+    //console.log(oauth_url)
     fetch(oauth_url, fetchOptions)
         .then((response) => response.json())
         .then((responseText) => {
-            console.log(responseText)
+            if(responseText && responseText.access_token){
+                self.token = responseText.access_token;
+            }
+            //console.log(responseText)
             done(responseText);
-        }).done();    
+        }).done();
 }
 
 module.exports = api;

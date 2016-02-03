@@ -92,7 +92,7 @@ var Me = React.createClass({
     return (
       <ScrollView style={{backgroundColor:'#eef0f3'}}>
         <View style={[]}>
-          <Image style={[styles.header,styles.center,{backgroundColor:'#6bb967'}] } >
+          <Image style={[styles.header,styles.center,{backgroundColor:'#f77b6f'}] } >
             <View style={styles.transparent}>
                 <Image style={[styles.logoSize]}
                        source={require("image!ic_logo_circle")} />

@@ -39,6 +39,7 @@ var {
 var home = React.createClass({
   getInitialState: function() {
     return {
+      user: null,
       store_id: 8805,
       loaded:false,
       banners:[],
@@ -49,15 +50,11 @@ var home = React.createClass({
   },
 
   componentDidMount: function() {
-    this.getStoreMunu();
+    this.getStoreMenu();
   },
 
-  getStoreMunu:function(){
+  getStoreMenu:function(){
     var self = this;
-  	var store_id=this.state.store_id;
-  	var p9 = "app";
-  	var url ="https://api.bqmart.cn/stores/menu.json?store_id=8805&p9=app";
-
     var options = {
         queries: {
           'inline-relation-depth': 1
@@ -71,39 +68,28 @@ var home = React.createClass({
             banners:ret.data.fragments,
             loaded:true,
           });
-       }
-    });
-    //服务模块
-    api.modules.get(10, options, function (ret){
-       if(ret && ret.code == 200){
-          self.setState({
-            services:ret.data.fragments,
-            loaded:true,
+          //服务模块
+          api.modules.get(10, options, function (ret){
+             if(ret && ret.code == 200){
+                self.setState({
+                  services:ret.data.fragments,
+                  loaded:true,
+                });
+                //ad模块
+                api.modules.get(3, options, function (ret){
+                   if(ret && ret.code == 200){
+                      self.setState({
+                        advs:ret.data.fragments,
+                        loaded:true,
+                      });
+                   }
+                });
+             }
           });
        }
     });
-    //ad模块
-    api.modules.get(3, options, function (ret){
-       if(ret && ret.code == 200){
-          self.setState({
-            advs:ret.data.fragments,
-            loaded:true,
-          });
-       }
-    });
-
-  	// fetch(url)
-   //    .then((response) => response.json())
-   //    .then((responseData) => {
-   //      this.setState({
-   //        banners: responseData.result.banners,
-   //        services: responseData.result.services,
-   //        advs:responseData.result.advs,
-   //        loaded:true,
-   //      });
-   //      this.getRecommendation();
-   //    })
-   //    .done();
+    
+    
   },
 
   getRecommendation:function(){

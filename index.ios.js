@@ -29,7 +29,7 @@ var app = React.createClass({
 
   componentDidMount: function() {
     store.get('user').then((userdata)=>{
-      console.log(userdata);
+      //console.log(userdata);
       this.setState({
         logined:userdata.username,
       })

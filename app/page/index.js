@@ -26,6 +26,7 @@ var index = React.createClass({
   getInitialState: function() {
     return{
       selectedTab:'home',
+      shoppingCartCnt: null,
       lastTab:'home',
       store_id:8805,
       showIndex: {
@@ -152,7 +153,7 @@ var index = React.createClass({
 
             <TabBarIOS.Item
               title="购物车"
-              badge="4"
+              badge={this.state.shoppingCartCnt}
               icon={require("image!icon_bottomtag_cart_n")}
               selected={this.state.selectedTab ==='shoppingcart'}
               onPress={this._selectTab.bind(this,'shoppingcart')}

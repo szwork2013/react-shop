@@ -1,5 +1,5 @@
 
-var api_version_prefix = '/v1/';
+var api_version_prefix = '/';
 var collection = function() {
     this.paginated = true;
 };

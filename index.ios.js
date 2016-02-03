@@ -23,7 +23,7 @@ var {
 var app = React.createClass({
   getInitialState: function() {
     return{
-      logined:false,
+      logined:true,
     };
   },
 

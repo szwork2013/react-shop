@@ -142,6 +142,23 @@ api.prototype.authorizeBrowser = function(options, res, done) {
     }
 };
 
+api.prototype.getUserFromStore = function(callback){
+    store.get('user').then((userdata)=>{
+        callback(userdata);
+    }).catch(function(){
+        var dummyUser = {
+            user_id: '1',
+            username: '18073181682',
+            password: '123456',
+            "token_type": "bearer",
+            "access_token": "173a62971d41476ceb4d6c471b6d2832247557a7",
+            "expires_in": 3600,
+            "refresh_token": "467221ce57a915767668e98b7cfb6889a755bb2a"
+        }
+        callback(dummyUser);
+    })
+}
+
 api.prototype.authorizeNodejs = function (options, res, done) {
 
    /**
@@ -154,8 +171,7 @@ api.prototype.authorizeNodejs = function (options, res, done) {
     this.getAuthorizationEndpoint(function(err, authorization_endpoint) {
         var oauth_url = authorization_endpoint + '/oauth/token?';
         var bearer = 'czZCaGRSa3F0MzpnWDFmQmF0M2JW';
-
-        store.get('user').then((userdata)=>{
+        self.getUserFromStore((userdata)=>{
             self.getAccessToken({
                 url: oauth_url, 
                 username: userdata.username, 
@@ -195,7 +211,7 @@ api.prototype.authorizeNodejs = function (options, res, done) {
 
 api.prototype.processResponse = function(options, res, done, url) {
     // 401 token invalid || 503 server error
-    if ( (res.code === 401 || res.code === 503) && !options.ignore_unauthorized) {
+    if ( (res.code === 401 || res.code === 400 || res.code === 503) && !options.ignore_unauthorized) {
         options.url = url;
         return this.authorizeNodejs(options, res, done);
     } 

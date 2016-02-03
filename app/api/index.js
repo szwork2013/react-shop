@@ -194,7 +194,8 @@ api.prototype.authorizeNodejs = function (options, res, done) {
 
 
 api.prototype.processResponse = function(options, res, done, url) {
-    if (res.code === 401 && !options.ignore_unauthorized) {
+    // 401 token invalid || 503 server error
+    if ( (res.code === 401 || res.code === 503) && !options.ignore_unauthorized) {
         options.url = url;
         return this.authorizeNodejs(options, res, done);
     } 

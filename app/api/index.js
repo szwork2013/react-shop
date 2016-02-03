@@ -154,32 +154,41 @@ api.prototype.authorizeNodejs = function (options, res, done) {
     this.getAuthorizationEndpoint(function(err, authorization_endpoint) {
         var oauth_url = authorization_endpoint + '/oauth/token?';
         var bearer = 'czZCaGRSa3F0MzpnWDFmQmF0M2JW';
-        self.getAccessToken({url: oauth_url, username: '18073181682', password:'123456'}, function(userData){
-            //保存用户新的 refresh_token 和 access_token
-            userData.username = '18073181682';
-            store.save('user', userData);
-            self.token = userData.access_token;
-            //使用新的 access_token 重试上一次请求，成功后返回正确的结果给用户
-            //如果仍然失败，返回失败错误信息给用户
-            options.headers['Authorization'] = 'Bearer ' + userData.access_token;
 
-            var fetchOptions = {
-              method:  options.verb,
-              headers: options.headers,
-              body: JSON.stringify(options.data)
-            };
-            //console.log(options.url)
-            fetch(options.url, fetchOptions)
-                .then((response) => response.json())
-                .then((responseText) => {
-                    //console.log(responseText)
-                    if (responseText.code === 401) {
-                        done && done(new Error(makeErrorMessageFromResponse(responseText)), responseText);
-                    } else {
-                        done && done(responseText);
-                    }
-                }).done();
-        })
+        store.get('user').then((userdata)=>{
+            self.getAccessToken({
+                url: oauth_url, 
+                username: userdata.username, 
+                password: userdata.password
+            }, function(userData){
+              //保存用户新的 refresh_token 和 access_token
+              userData.username = userdata.username;
+              userData.password = userdata.password;
+              store.save('user', userData);
+              self.token = userData.access_token;
+              //使用新的 access_token 重试上一次请求，成功后返回正确的结果给用户
+              //如果仍然失败，返回失败错误信息给用户
+              options.headers['Authorization'] = 'Bearer ' + userData.access_token;
+
+              var fetchOptions = {
+                method:  options.verb,
+                headers: options.headers,
+                body: JSON.stringify(options.data)
+              };
+              //console.log(options.url)
+              fetch(options.url, fetchOptions)
+                  .then((response) => response.json())
+                  .then((responseText) => {
+                      //console.log(responseText)
+                      if (responseText.code === 401) {
+                          done && done(new Error(makeErrorMessageFromResponse(responseText)), responseText);
+                      } else {
+                          done && done(responseText);
+                      }
+                  }).done();
+          })
+        });
+        
     })
 };
 

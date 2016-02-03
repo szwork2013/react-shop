@@ -5,6 +5,7 @@
  * @version $Id$
  */
 'use strict';
+var store = require('react-native-simple-store');
 var React = require('react-native');
 var Util = require('../util/util');
 var Global = require('../util/global');
@@ -24,6 +25,7 @@ var {
 var ShoppingCart = React.createClass({
   getInitialState: function() {
     return {
+      user: null,
       cartList:{
         dataSource:new ListView.DataSource({rowHasChanged:(row1,row2) =>row1!==row2}),
         loaded:false,
@@ -32,6 +34,9 @@ var ShoppingCart = React.createClass({
   },
 
   componentDidMount: function() {
+    store.get('user').then((userdata)=>{
+      this.setState({user: userdata});
+    });
     this._fetchData();
   },
 
@@ -87,9 +92,9 @@ var ShoppingCart = React.createClass({
               <View style={{flexDirection:'row',alignItems:'flex-end',}}>
                 <Text style={{color:'#f28006',flex:1, fontSize: 20}}>{item.market_price} 元</Text>
                 <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                  <Image style={{height:25,width:25}} source={require("image!ic_goods_add")}/>
-                  <Text style={{color:'#f28006',paddingLeft:10,paddingRight:10}}>{1}</Text>
                   <Image style={{height:25,width:25}} source={require("image!ic_goods_reduce")}/>
+                  <Text style={{color:'#f28006',paddingLeft:10,paddingRight:10}}>{1}</Text>
+                  <Image style={{height:25,width:25}} source={require("image!ic_goods_add")}/>
                 </View>
               </View>
             </View>

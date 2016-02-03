@@ -34,7 +34,7 @@ Users.prototype.getCartDetail = function (userId, options, done) {
     options = options || {};
     options.status_code = 200;
 
-    this.api.get('/api/v1/users/' + userId + '/cart', options, function (err, res) {
+    this.api.get('/users/' + userId + '/cart', options, function (err, res) {
         if (err) {return done(err);}
         done(null, res.body);
     });
@@ -50,7 +50,7 @@ Users.prototype.updateCart = function (userId, data, options, done) {
     options.data = data;
     options.status_code = 200;
 
-    this.api.put('/api/v1/users/' + userId + '/cart', options, function (err, res) {
+    this.api.put('/users/' + userId + '/cart', options, function (err, res) {
         if (err) {return done(err);}
         done(null, res.body);
     });
@@ -65,7 +65,7 @@ Users.prototype.emptyCart = function (userId, options, done) {
     options = options || {};
     options.status_code = 200;
 
-    this.api.del('/api/v1/users/' + userId + '/cart', options, function (err, res) {
+    this.api.del('/users/' + userId + '/cart', options, function (err, res) {
         if (err) {return done(err);}
         done(null, res.body);
     });

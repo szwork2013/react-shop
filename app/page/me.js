@@ -11,6 +11,7 @@ var OrderManager = require('./order/orderlist');
 var CouponManager = require('./coupon/couponlist');
 var ShellManager = require('./shell/shell');
 var store = require('react-native-simple-store');
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 
 var {
@@ -57,6 +58,9 @@ var Me = React.createClass({
 
   componentDidMount: function() {
     store.get('user').then((userdata)=>{
+      if(userdata.username == 'dummyUser') {
+        RCTDeviceEventEmitter.emit('user.login', false);
+      }
       this.setState({
         user:userdata,
     })});
@@ -78,9 +82,17 @@ var Me = React.createClass({
   },
 
   _logout: function(){
-    store.delete('user').then((userdata)=>{
-      alert('成功退出')
-    });
+    var dummyUser = {
+      user_id: '3',
+      username: 'dummyUser',
+      password: '123456',
+      "token_type": "bearer",
+      "access_token": "173a62971d41476ceb4d6c471b6d2832247557a7",
+      "expires_in": 3600,
+      "refresh_token": "467221ce57a915767668e98b7cfb6889a755bb2a"
+    }
+    store.save('user', dummyUser);
+    RCTDeviceEventEmitter.emit('user.login', false);
   },
 
   render: function() {

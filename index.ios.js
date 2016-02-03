@@ -6,6 +6,7 @@
 
 var React = require('react-native');
 var store = require('react-native-simple-store');
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 
 var Login = require('./app/page/login');
 var Index = require('./app/page/index');
@@ -34,6 +35,12 @@ var app = React.createClass({
         logined:userdata.username,
       })
     });
+
+    RCTDeviceEventEmitter.addListener('user.login', (isLogin) => {
+       this.setState({
+        logined : isLogin
+       })
+    })
   },
 
   _renderLogin:function(){
@@ -48,6 +55,8 @@ var app = React.createClass({
       logined:true,
     });
   },
+
+
 
   _renderIndex:function(){
     return (

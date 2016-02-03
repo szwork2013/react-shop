@@ -5,6 +5,8 @@
  * @version $Id$
  */
 'use strict';
+var store = require('react-native-simple-store');
+var RCTDeviceEventEmitter = require('RCTDeviceEventEmitter');
 var React = require('react-native');
 
 var API = require('../../network/api');
@@ -34,6 +36,7 @@ var resultsCache = {
 var GoodsDetail = React.createClass({
     getInitialState: function() {
         return {
+            user: null,
             good: null,
             page: 'detail'
         };
@@ -44,6 +47,9 @@ var GoodsDetail = React.createClass({
         this.setState({
           good: data,
           page: 'detail'
+        });
+        store.get('user').then((userdata)=>{
+          this.setState({user: userdata});
         });
         this._fetchGoods(data.goodId);
     },
@@ -75,7 +81,22 @@ var GoodsDetail = React.createClass({
     },
 
     addToCart: function(){
-        console.log('add to cart')
+        var user = this.state.user;
+        var data = {
+
+        }
+        console.log(user)
+        if (user.username != 'dummyUser') {
+            //添加到购物车
+            // api.users.updateCart(user.username, data, function(){
+                
+            // })
+        } else {
+            console.log('请先登录')
+            RCTDeviceEventEmitter.emit('user.login', false);
+        }
+        //api.users.cart(userId).get()
+
     },
 
     renderTabContent: function(){

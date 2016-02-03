@@ -147,8 +147,8 @@ api.prototype.getUserFromStore = function(callback){
         callback(userdata);
     }).catch(function(){
         var dummyUser = {
-            user_id: '1',
-            username: '18073181682',
+            user_id: '3',
+            username: 'dummyUser',
             password: '123456',
             "token_type": "bearer",
             "access_token": "173a62971d41476ceb4d6c471b6d2832247557a7",

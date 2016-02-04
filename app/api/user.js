@@ -32,6 +32,7 @@ Users.prototype.getCartDetail = function (userId, options, done) {
         options = null;
     }
     options = options || {};
+    options.query = this.makeQueryString(options);
     options.status_code = 200;
 
     this.api.get('/users/' + userId + '/cart', options, function (err, res) {
@@ -47,6 +48,7 @@ Users.prototype.updateCart = function (userId, data, options, done) {
         options = null;
     }
     options = options || {};
+    options.query = this.makeQueryString(options);
     options.data = data;
     options.status_code = 200;
 
@@ -63,6 +65,7 @@ Users.prototype.emptyCart = function (userId, options, done) {
         options = null;
     }
     options = options || {};
+    options.query = this.makeQueryString(options);
     options.status_code = 200;
 
     this.api.del('/users/' + userId + '/cart', options, function (err, res) {

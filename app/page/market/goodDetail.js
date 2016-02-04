@@ -57,20 +57,10 @@ var GoodsDetail = React.createClass({
     _fetchGoods:function (goodId) {
 
         var thiz = this;
-        // Util.post(API.GOODSDETAIL,{'spec_id':spec_id},function (ret){
-        //   if(ret.code==0){
-        //     thiz.setState({
-        //       good: ret.data,
-        //     });
-        //   }else{
-        //     alert(ret.msg);
-        //   }
-        // });
         var options = {
             queries: {'inline-relation-depth': 1},
             filters: {}
         };
-        console.log(api)
         api.goods.get(goodId, options, function (ret){
             if(ret.code == 200) {
                 thiz.setState({
@@ -83,14 +73,14 @@ var GoodsDetail = React.createClass({
     addToCart: function(){
         var user = this.state.user;
         var data = {
-
+            good_id: this.state.good.id,
+            amount: 1
         }
-        console.log(user)
-        if (user.username != 'dummyUser') {
+        if (user && user.username != 'dummyUser') {
             //添加到购物车
-            // api.users.updateCart(user.username, data, function(){
+            api.users.updateCart(user.user_id, data, function(){
                 
-            // })
+            })
         } else {
             console.log('请先登录')
             RCTDeviceEventEmitter.emit('user.login', false);

@@ -225,6 +225,7 @@ api.prototype.marshalRequest = function(url, options, done) {
     done.call(self, null, url, options);
     //}, 1);
 };
+
 api.prototype.executeRequest = function(path, options, done) {
     // Allow the special case where api components may need to talk to the UAA with it's own host.
     var prepend_host = true;
@@ -239,12 +240,14 @@ api.prototype.executeRequest = function(path, options, done) {
 
         /* judge global and fetch API is avaliable**/
         if ( global && typeof fetch === 'function') {
+            options.headers['Content-Type'] = 'application/json';
+            options.headers['Accept'] = 'application/json';
             var fetchOptions = {
               method:  options.verb,
               headers: options.headers,
               body: JSON.stringify(options.data)
             };
-            console.log('['+options.verb+ '] ' + url)
+            console.log('['+options.verb+ '] ' + url, fetchOptions)
             fetch(url, fetchOptions)
                 .then((response) => response.json())
                 .then((responseText) => {

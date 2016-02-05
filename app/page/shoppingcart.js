@@ -59,6 +59,7 @@ var ShoppingCart = React.createClass({
     api.users.getCartDetail(this.state.user.user_id, options, function (ret){
       if(ret && ret.code == 200 && ret.data.length > 0){
         thiz.setState({
+          cartItems: ret.data,
           cartList:{
             dataSource: thizDataSource.cloneWithRows(ret.data),
             loaded:true,
@@ -72,10 +73,27 @@ var ShoppingCart = React.createClass({
     console.log('去结算')
   },
 
+  adjustQuatity: function(goodId, delta){
+    var cartItems = this.state.cartItems.slice(0),
+        thizDataSource = this.state.cartList.dataSource;
+    for (var i=0; i< cartItems.length; i++){
+      var item = cartItems[i];
+      if (item.good_id == goodId){
+        item.amount = item.amount + delta;
+      }
+    }
+    this.setState({
+      cartItems: cartItems,
+      cartList: {
+        dataSource: thizDataSource.cloneWithRows(cartItems),
+        loaded: true
+      }
+    })
+  },
+
   _renderCartList:function(rowData, sectionID, rowID){
     var products = [rowData] //.products;
     var procuctsView = [];
-    //console.log(products)
     for(var i = 0; i < products.length; i++){
       var good = products[i].good;
       procuctsView.push(
@@ -87,9 +105,17 @@ var ShoppingCart = React.createClass({
               <View style={{flexDirection:'row',alignItems:'flex-end',}}>
                 <Text style={{color:'#f28006',flex:1, fontSize: 20}}>{good.market_price} 元</Text>
                 <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
-                  <Image style={{height:25,width:25}} source={require("image!ic_goods_reduce")}/>
+                  <TouchableHighlight
+                    underlayColor='#fff'
+                    onPress={() => this.adjustQuatity(good.id, -1)}>
+                    <Image style={{height:25,width:25}} source={require("image!ic_goods_reduce")}/>
+                  </TouchableHighlight>
                   <Text style={{color:'#f28006',paddingLeft:10,paddingRight:10}}>{products[i].amount}</Text>
-                  <Image style={{height:25,width:25}} source={require("image!ic_goods_add")}/>
+                  <TouchableHighlight
+                    underlayColor='#fff'
+                    onPress={() => this.adjustQuatity(good.id, 1)}>
+                    <Image style={{height:25,width:25}} source={require("image!ic_goods_add")}/>
+                   </TouchableHighlight>
                 </View>
               </View>
             </View>

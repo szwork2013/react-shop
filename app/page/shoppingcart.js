@@ -12,6 +12,7 @@ var Util = require('../util/util');
 var Global = require('../util/global');
 var API = require('../network/api');
 var Loading = require('./loading');
+var Casher = require('./order/casher');
 
 var api = require('../api');
 
@@ -70,18 +71,20 @@ var ShoppingCart = React.createClass({
   },
 
   gotoCasher: function(){
-    console.log('去结算')
+    this.props.navigator.push({
+        title: '新建订单',
+        component: Casher,
+        passProps:{
+          data: this.state.cartItems
+        }
+      });
   },
 
-  adjustQuatity: function(goodId, delta){
+  adjustQuatity: function(rowID, delta){
     var cartItems = this.state.cartItems.slice(0),
         thizDataSource = this.state.cartList.dataSource;
-    for (var i=0; i< cartItems.length; i++){
-      var item = cartItems[i];
-      if (item.good_id == goodId){
-        item.amount = item.amount + delta;
-      }
-    }
+    cartItems[rowID].amount += delta;
+    console.log(cartItems)
     this.setState({
       cartItems: cartItems,
       cartList: {
@@ -94,6 +97,7 @@ var ShoppingCart = React.createClass({
   _renderCartList:function(rowData, sectionID, rowID){
     var products = [rowData] //.products;
     var procuctsView = [];
+    console.log('1111')
     for(var i = 0; i < products.length; i++){
       var good = products[i].good;
       procuctsView.push(
@@ -107,13 +111,13 @@ var ShoppingCart = React.createClass({
                 <View style={{flexDirection:'row',alignItems:'center',justifyContent:'center'}}>
                   <TouchableHighlight
                     underlayColor='#fff'
-                    onPress={() => this.adjustQuatity(good.id, -1)}>
+                    onPress={() => this.adjustQuatity(rowID, -1)}>
                     <Image style={{height:25,width:25}} source={require("image!ic_goods_reduce")}/>
                   </TouchableHighlight>
                   <Text style={{color:'#f28006',paddingLeft:10,paddingRight:10}}>{products[i].amount}</Text>
                   <TouchableHighlight
                     underlayColor='#fff'
-                    onPress={() => this.adjustQuatity(good.id, 1)}>
+                    onPress={() => this.adjustQuatity(rowID, 1)}>
                     <Image style={{height:25,width:25}} source={require("image!ic_goods_add")}/>
                    </TouchableHighlight>
                 </View>

@@ -24,7 +24,6 @@ var bqseller = React.createClass({
             送至吉晟别墅1-01
           </Text>
         </View>
-        //<Home/>
       </View>
     );
   }
